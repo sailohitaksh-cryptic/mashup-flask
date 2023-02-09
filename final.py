@@ -13,7 +13,7 @@ import os
 def check_valid_email(email):
     # write a function to check if the email is valid
     # example: return '@' in email and '.com' in email
-    return '@' in email and '.com' in email
+    return '@' in email and '.' in email
 
 def run_mashup(singerName, numVideos, audioDuration, email):
     outputFileName="mashup.mp3"
