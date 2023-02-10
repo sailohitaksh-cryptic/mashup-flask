@@ -10,8 +10,6 @@ from email.mime.base import MIMEBase
 from email import encoders
 import os
 
-os.environ['FLASK_ENV'] = 'production'
-
 
 app = Flask(__name__)
 
@@ -198,4 +196,4 @@ def run_mashup(singerName, numVideos, audioDuration, email):
     print("Email sent successfully")
 
 if __name__ == "main":
-    app.run(debug=False,host='0.0.0.0')
+    app.run(debug=True)
