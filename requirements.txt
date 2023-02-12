@@ -2,3 +2,4 @@ flask
 youtube-search
 pytube
 pydub
+ffmpeg-python
