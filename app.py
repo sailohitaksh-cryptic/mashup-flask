@@ -172,8 +172,7 @@ def run_mashup(singerName, numVideos, audioDuration, email):
     for i in range(len(url_list)):
         audio_file="audio_"+str(i)+".mp3"
         file = AudioSegment.from_file(audio_file)
-        combined_audio+=file
-        combined_audio+=AudioSegment.from_file("default.wav")
+        combined_audio=combined_audio.append(file, crossfade=1000)
 
     combined_audio.export(outputFileName, format="mp3")
 
