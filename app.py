@@ -147,24 +147,28 @@ def run_mashup(singerName, numVideos, audioDuration, email):
         content_list = f.readlines()
 
     url_list = [x.strip() for x in content_list]
+    combined_audio=AudioSegment.from_file("default.wav")
 
     for i in range(len(url_list)):
         link=url_list[i]
         youtubeObject = YouTube(link)
         youtubeObject.streams.first().download( filename='video_'+str(i)+".mp4")
-
-    print("Download is completed successfully")
-
-    for i in range(len(url_list)):
         video_file="video_"+str(i)+".mp4"
         audio_file="audio_"+str(i)+".mp3"
         sound = AudioSegment.from_file(video_file, format="mp4")
         sound = sound[10*1000:(audioDuration+10) * 1000]
         sound.export(audio_file, format="mp3")
+        os.remove("video_"+str(i)+".mp4")
+        file = AudioSegment.from_file(audio_file)
+        combined_audio+=file
+        combined_audio+=AudioSegment.from_file("default.wav")
+        os.remove("audio_"+str(i)+".mp3")
+
+    print("Download is completed successfully")
 
     print("audio files exported")
 
-    combined_audio=AudioSegment.from_file("default.wav")
+    
     for i in range(len(url_list)):
         audio_file="audio_"+str(i)+".mp3"
         file = AudioSegment.from_file(audio_file)
@@ -180,6 +184,7 @@ def run_mashup(singerName, numVideos, audioDuration, email):
         myzip.write(outputFileName)
 
     print("Output file zipped successfully")
+    os.remove(outputFileName)
 
     # Email the zipped file to the recipient
     msg = MIMEMultipart()
@@ -199,6 +204,7 @@ def run_mashup(singerName, numVideos, audioDuration, email):
     server.sendmail("uselessmail122@gmail.com", email, msg.as_string())
     server.quit()
     print("Email sent successfully")
+    os.remove(zip_file_name)
 
 if __name__ == "main":
     app.run(debug=True)
