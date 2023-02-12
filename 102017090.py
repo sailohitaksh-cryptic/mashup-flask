@@ -7,6 +7,7 @@ import smtplib
 from email.mime.multipart import MIMEMultipart
 from email.mime.base import MIMEBase
 from email import encoders
+import os
 
 if len(sys.argv) != 5:
     print("Usage: python <program.py> <SingerName> <NumberOfVideos> <AudioDuration> <OutputFileName>")
@@ -21,11 +22,18 @@ else:
     sys.exit()
 
 outputFileName="mashup.mp3"
-searchResults = ys.YoutubeSearch(singerName, numVideos).to_dict()
+searchResults = ys.YoutubeSearch(singerName, numVideos*2).to_dict()
+count=0
+
 
 with open("urls.txt", "w") as f:
     for i in range(min(numVideos,len(searchResults))):
-        f.write("https://youtube.com"+searchResults[i]['url_suffix']+"\n")
+        duration = searchResults[i]['duration']
+        minutes, seconds = map(int, duration.split(':'))
+        total_seconds = minutes * 60 + seconds
+        if total_seconds<=600 and count <= numVideos:
+            f.write("https://youtube.com"+searchResults[i]['url_suffix']+"\n")
+            count+=1
 
 print("urls obtained")
 
@@ -33,29 +41,26 @@ with open("urls.txt") as f:
     content_list = f.readlines()
 
 url_list = [x.strip() for x in content_list]
+combined_audio=AudioSegment.from_file("default.wav")
 
 for i in range(len(url_list)):
     link=url_list[i]
     youtubeObject = YouTube(link)
     youtubeObject.streams.first().download( filename='video_'+str(i)+".mp4")
-
-print("Download is completed successfully")
-
-for i in range(len(url_list)):
     video_file="video_"+str(i)+".mp4"
     audio_file="audio_"+str(i)+".mp3"
     sound = AudioSegment.from_file(video_file, format="mp4")
     sound = sound[10*1000:(audioDuration+10) * 1000]
     sound.export(audio_file, format="mp3")
-
-print("audio files exported")
-
-combined_audio=AudioSegment.from_file("default.wav")
-for i in range(len(url_list)):
-    audio_file="audio_"+str(i)+".mp3"
+    os.remove("video_"+str(i)+".mp4")
     file = AudioSegment.from_file(audio_file)
     combined_audio+=file
-    combined_audio+=AudioSegment.from_file("default.wav")
+    combined_audio=combined_audio.append(file, crossfade=1000)
+    os.remove("audio_"+str(i)+".mp3")
+
+print("Download is completed successfully")
+
+print("audio files exported")
 
 combined_audio.export(outputFileName, format="mp3")
 
@@ -66,7 +71,7 @@ with zipfile.ZipFile(zip_file_name, 'w') as myzip:
     myzip.write(outputFileName)
 
 print("Output file zipped successfully")
-
+os.remove(outputFileName)
 
 # Email the zipped file to the recipient
 msg = MIMEMultipart()
@@ -85,5 +90,6 @@ server.starttls()
 server.login("uselessmail122@gmail.com", "lkawsjsrpatufori")
 server.sendmail("uselessmail122@gmail.com", email, msg.as_string())
 server.quit()
+os.remove(zip_file_name)
 
 print("Email sent successfully")
