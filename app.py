@@ -130,11 +130,16 @@ document.getElementById("numVideosError").innerHTML = "";
 
 def run_mashup(singerName, numVideos, audioDuration, email):
     outputFileName="mashup.mp3"
-    searchResults = ys.YoutubeSearch(singerName, numVideos).to_dict()
+    searchResults = ys.YoutubeSearch(singerName, numVideos*2).to_dict()
+    
 
     with open("urls.txt", "w") as f:
         for i in range(min(numVideos,len(searchResults))):
-            f.write("https://youtube.com"+searchResults[i]['url_suffix']+"\n")
+            duration = searchResults[i]['duration']
+            minutes, seconds = map(int, duration.split(':'))
+            total_seconds = minutes * 60 + seconds
+            if total_seconds<=600:
+                f.write("https://youtube.com"+searchResults[i]['url_suffix']+"\n")
 
     print("urls obtained")
 
