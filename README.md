@@ -8,9 +8,9 @@ To use the application, follow the steps below:
 
 1. Enter the singer's name, number of videos, and duration to be clipped in the appropriate fields.
 2. Enter your email address.
-3. Click on the "Create Mashup" button.
-4. Wait for the application to search for the YouTube videos of the singer, download them, convert them to audio, and create the mashup.
-5. Download the final mashup audio file.
+3. Click on the "Submit" button.
+4. Wait for the application to search for the YouTube videos of the singer, download them, convert them to audio, and create the mashup which will be sent to your mail.
+5. Download the final mashup audio file from your mail.
 
 ## Dependencies
 
@@ -20,6 +20,7 @@ The following packages are required to run the application:
 - Pytube
 - Audiosegment
 - Youtubesearch
+- ffmpeg-python
 
 All of these packages are included in the `requirements.txt` file.
 
