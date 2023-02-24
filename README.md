@@ -44,7 +44,7 @@ The application is deployed on Azure. To deploy the application, follow the step
 
 ## Credits
 
-This application was created by [Your Name] using Python, Flask, Pytube, Audiosegment, and Youtubesearch. 
+This application was created by [Sai Lohitaksh](https://github.com/sailohitaksh-cryptic) using Python, Flask, Pytube, Audiosegment, and Youtubesearch. 
 
 ## License
 
